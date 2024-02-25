@@ -4,13 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import org.example.Exception.ProductException;
-import org.example.Exception.SellerException;
 import org.example.Model.Product;
 import org.example.Model.Seller;
 import org.example.Service.SellerService;
 import org.example.Service.ProductService;
+import org.example.DAO.SellerDao;
+import org.example.DAO.ProductDao;
 
-import javax.xml.namespace.QName;
 import java.util.List;
 
 public class ProductController
@@ -19,10 +19,16 @@ public class ProductController
 
     ProductService productService;
 
-    public ProductController(SellerService sellerService, ProductService productService)
+    SellerDao sellerDao;
+
+    ProductDao productDao;
+
+    public ProductController(SellerService sellerService, ProductService productService, SellerDao sellerDao, ProductDao productDao)
     {
         this.sellerService = sellerService;
         this.productService = productService;
+        this.sellerDao = sellerDao;
+        this.productDao = productDao;
     }
 
     public Javalin getAPI()
@@ -35,18 +41,33 @@ public class ProductController
 //          plan out some of our endpoints here.
 //          Need 'a get' for both Seller and Product
 //          Need 'a post' for both Seller and Product
-//          Later I will showcase an endpoint that requires usage of both the author and painting service
-//          - and exception handling with the controller
-//          Test case/logging
+
         api.get("seller", context ->
         {
-            List<Seller> sellerList = sellerService.getSellerList();
+            List<Seller> sellerList = sellerService.getAllSeller();
             context.json(sellerList);
+
         });
         api.get("product", context ->
         {
-            List<Product> productList = productService.getProductList();
+            List<Product> productList = productService.getAllProduct();
             context.json(productList);
+        });
+
+        api.get("product/{productSeller}", context ->
+        {
+            Product p = productDao.getProductByProductSeller(context.pathParam("productSeller"));
+            if (p == null)
+            {
+                context.status(404);
+                context.result("This product seller not found.");
+            }
+            else
+            {
+                context.json(p);
+                context.status(200);
+            }
+
         });
         api.post("seller", context ->
         {
@@ -54,10 +75,12 @@ public class ProductController
             try
             {
                 ObjectMapper om = new ObjectMapper();
-                Seller a = om.readValue(context.body(), Seller.class);
-//This code, sellerService.addAuthor is a risky line of code; we should add a Custom Exception for this later.
-//Line above this could also potentially cause the JsonProcessingException to trigger as well.
-                sellerService.addSeller(a);
+
+                Seller s = om.readValue(context.body(), Seller.class);
+                //System.out.println("Seller being set, s: " + s.toString());
+
+                //sellerService.saveSeller(s);
+                sellerDao.insertSeller(s);
                 context.status(201);
             } catch (JsonProcessingException e)
             {
@@ -71,22 +94,16 @@ public class ProductController
             {
                 ObjectMapper om = new ObjectMapper();
                 Product p = om.readValue(context.body(), Product.class);
-                Product newProduct = productService.addProduct(p);
-                System.out.println("newProduct: " + newProduct);
+//                Product newProduct = productService.saveProduct(p);
+                productDao.insertProduct(p);
+                System.out.println("newProduct: " + p);
                 context.status(201);
-                context.json(newProduct);
+                context.json(p);
 
                 //System.out.println("productList: " + productService.getProductList());
             }
-            /*catch (SellerException e)
-            {
-                context.result(e.getMessage());
-                context.status(400);
-            }*/ catch (JsonProcessingException e)
-            {
-                context.result(e.getMessage());
-                context.status(400);
-            } catch (ProductException e)
+
+            catch (JsonProcessingException e)
             {
                 context.result(e.getMessage());
                 context.status(400);
@@ -94,8 +111,8 @@ public class ProductController
         });
         api.get("product/{id}", context ->
         {
-            long id = Long.parseLong(context.pathParam("id"));
-            Product p = productService.getProductByID(id);
+            int productId = (int) Long.parseLong(context.pathParam("id"));
+            Product p = productService.getProductById();
             if (p == null)
             {
                 context.status(404);
@@ -110,50 +127,52 @@ public class ProductController
         });
         api.put("product/{id}", context ->
         {
-            long id = Long.parseLong(context.pathParam("id"));
+            /*int id = (int) Long.parseLong(context.pathParam("id"));
             ObjectMapper om = new ObjectMapper();
-            Product updatedProduct = om.readValue(context.body(), Product.class);
+            Product updatedProduct = om.readValue(context.body(), Product.class);*/
 
-            productService.updateProduct(id, updatedProduct);
-
+            //productService.updateProduct(id, updatedProduct);
+            Product p = productService.updateProductPrice((int) Long.parseLong(context.pathParam("id")), Double.parseDouble(context.pathParam("newPrice")));
                 context.status(200);
-                context.result("This product was updated.");
+                //context.result("This product was updated.");
+            context.json(p);
 
         });
 
         api.delete("product/{id}", context ->
         {
-            long id = Long.parseLong(context.pathParam("id"));
-            Product p = productService.getProductByID(id);
+            int productId = (int) Long.parseLong(context.pathParam("productId"));
+            Product p = productService.deleteProductById(productId);
             if(p == null)
             {
                 context.status(404);
                 context.result("Product ID entered was not found.");
             }else
             {
-                productService.deleteProductByID(id);
+                productService.deleteProductById(productId);
                 context.json(p);
                 context.status(200);
                 context.result("Product deleted");
             }
         });
+        api.get("seller/{id}", context ->
+        {
+            int id = (int) Long.parseLong(context.pathParam("id"));
+            Seller s = sellerService.getSellerById(id);
+            if (s == null)
+            {
+                context.status(404);
+                context.result("This seller ID not found.");
+            }
+            else
+            {
+                context.json(s);
+                context.status(200);
+            }
+
+        });
         return api;
 
-//      api.get("product/{productSeller}", context ->
-//      {
-//          Product p = productService.getProductByProductSeller(context.pathParam("productSeller"));
-//          if (p == null)
-//          {
-//              context.status(404);
-//              context.result("This product seller not found.");
-//          }
-//          else
-//          {
-//              context.json(p);
-//              context.status(200);
-//          }
-
-//      });
     }
 }
 

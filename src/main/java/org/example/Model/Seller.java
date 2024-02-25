@@ -4,8 +4,17 @@ import java.util.Objects;
 
 public class Seller
 {
+    public int id;
     public String validName;
-    public Seller(){
+
+
+    public Seller()
+    {
+
+    }
+    public Seller(int id, String validName){
+        this.id = id;
+        this.validName = validName;
     }
 
     public Seller(String validName)
@@ -18,9 +27,19 @@ public class Seller
         return validName;
     }
 
-    public void setValidName(String validName)
+    public void setValidName()
     {
         this.validName = validName;
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
     }
 
     @Override
@@ -30,26 +49,26 @@ public class Seller
         {
             return true;
         }
-        if (o == null || getClass() != o.getClass())
+        if (!(o instanceof Seller))
         {
             return false;
         }
         Seller seller = (Seller) o;
-        return Objects.equals(validName, seller.validName);
+        return id == seller.id && Objects.equals(validName, seller.validName);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(validName);
+        return Objects.hash(id, validName);
     }
 
     @Override
     public String toString()
     {
         return "Seller{" +
-                "ValidName='" + validName + '\'' +
+                "id=" + id +
+                ", validName='" + validName + '\'' +
                 '}';
     }
-
 }
