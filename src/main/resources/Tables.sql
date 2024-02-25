@@ -3,10 +3,10 @@ DROP TABLE Seller if exists;
 
 
 CREATE TABLE Seller
-(id int NOT NULL AUTO_INCREMENT PRIMARY KEY, validName varchar(100) UNIQUE);
+(id int auto_increment primary key, validName varchar(100) unique not null);
 
 CREATE TABLE Product
-(productId int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+(productId int auto_increment primary key,
 productName varchar(100),
 productSeller varchar(100),
 productPrice double,

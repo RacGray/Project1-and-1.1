@@ -35,28 +35,25 @@ public class SellerDao
 
     public void insertSeller(Seller s){
         try{
-            /*PreparedStatement ps = conn.prepareStatement("insert into Seller" +
-                    "(id, validName) values (?, ?)");*?
 
-             */
             PreparedStatement ps = conn.prepareStatement("insert into Seller" +
-                    "(id, validName) values (?, ?)");
-            ps.setInt(1, s.getId());
-            ps.setString(2, s.getValidName());
+                    "(validName) values (?)");
+            ps.setString(1, s.getValidName());
             ps.executeUpdate();
         }catch (SQLException e){
             e.printStackTrace();
         }
     }
 
+
+
     public Seller getSellerById(int id){
         try{
             PreparedStatement ps = conn.prepareStatement("select * from seller where id = ?");
-            ps.setInt(1, getSellerById(id).getId());
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 String validName = rs.getString("validName");
-                id = rs.getInt("id");
                 Seller s = new Seller(id, validName);
                 return s;
             }else{
@@ -67,6 +64,43 @@ public class SellerDao
         }
         return null;
     }
+
+    public Seller getSellerByName(String name)
+    {
+        try{
+            PreparedStatement ps = conn.prepareStatement("select * from seller where validName = ?");
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                String validName = rs.getString("validName");
+                int id = rs.getInt("id");
+                return new Seller(id, validName);
+            }else{
+                return null;
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /*public Seller getSellerByValidName(String name){
+        try{
+            PreparedStatement ps = conn.prepareStatement("select * from seller where validName = ?");
+            ps.setString(1, getSellerByValidName().getValidName());
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                String validName = rs.getString("validName");
+                Seller s = new Seller(validName);
+                return s;
+            }else{
+                return null;
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }*/
 
 
 }

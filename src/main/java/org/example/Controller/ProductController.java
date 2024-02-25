@@ -69,6 +69,22 @@ public class ProductController
             }
 
         });
+
+        /*api.get("seller/{validSeller}", context ->
+        {
+            Seller s = sellerDao.getSellerByValidName(context.pathParam("validName"));
+            if (s == null)
+            {
+                context.status(404);
+                context.result("This seller is not authorized.");
+            }
+            else
+            {
+                context.json(s);
+                context.status(200);
+            }
+
+        });*/
         api.post("seller", context ->
         {
             System.out.println("Seller post happening");
@@ -77,9 +93,7 @@ public class ProductController
                 ObjectMapper om = new ObjectMapper();
 
                 Seller s = om.readValue(context.body(), Seller.class);
-                //System.out.println("Seller being set, s: " + s.toString());
 
-                //sellerService.saveSeller(s);
                 sellerDao.insertSeller(s);
                 context.status(201);
             } catch (JsonProcessingException e)
@@ -95,10 +109,11 @@ public class ProductController
                 ObjectMapper om = new ObjectMapper();
                 Product p = om.readValue(context.body(), Product.class);
 //                Product newProduct = productService.saveProduct(p);
-                productDao.insertProduct(p);
-                System.out.println("newProduct: " + p);
+                Product newProduct = productService.addProduct(p);
+                //productDao.insertProduct(p);
+                System.out.println("newProduct: " + newProduct);
                 context.status(201);
-                context.json(p);
+                context.json(newProduct);
 
                 //System.out.println("productList: " + productService.getProductList());
             }
@@ -127,33 +142,24 @@ public class ProductController
         });
         api.put("product/{id}", context ->
         {
-            /*int id = (int) Long.parseLong(context.pathParam("id"));
+            int id = (int) Long.parseLong(context.pathParam("id"));
             ObjectMapper om = new ObjectMapper();
-            Product updatedProduct = om.readValue(context.body(), Product.class);*/
+            Product updatedProduct = om.readValue(context.body(), Product.class);
 
-            //productService.updateProduct(id, updatedProduct);
-            Product p = productService.updateProductPrice((int) Long.parseLong(context.pathParam("id")), Double.parseDouble(context.pathParam("newPrice")));
+            Product newProduct = productService.updateProduct(id, updatedProduct);
+            //Product p = productService.updateProductPrice((int) Long.parseLong(context.pathParam("id")), Double.parseDouble(context.formParam("newPrice")));
                 context.status(200);
                 //context.result("This product was updated.");
-            context.json(p);
+            context.json(newProduct);
 
         });
 
         api.delete("product/{id}", context ->
         {
-            int productId = (int) Long.parseLong(context.pathParam("productId"));
-            Product p = productService.deleteProductById(productId);
-            if(p == null)
-            {
-                context.status(404);
-                context.result("Product ID entered was not found.");
-            }else
-            {
-                productService.deleteProductById(productId);
-                context.json(p);
+            productService.deleteProductById((int) Long.parseLong(context.pathParam("id")));
                 context.status(200);
                 context.result("Product deleted");
-            }
+
         });
         api.get("seller/{id}", context ->
         {

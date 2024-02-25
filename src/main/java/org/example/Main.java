@@ -20,8 +20,8 @@ public class Main
 
         Connection conn = ConnectionSingleton.getConnection();
         SellerDao sellerDao = new SellerDao(conn);
-        ProductDao productDao = new ProductDao(conn);
         SellerService sellerService = new SellerService(sellerDao);
+        ProductDao productDao = new ProductDao(conn, sellerService);
         ProductService productService = new ProductService(sellerService, productDao);
         ProductController productController = new ProductController(sellerService, productService, sellerDao, productDao);
 

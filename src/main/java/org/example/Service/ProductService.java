@@ -2,6 +2,7 @@ package org.example.Service;
 
 import org.example.DAO.ProductDao;
 import org.example.Exception.ProductException;
+import org.example.Exception.SellerException;
 import org.example.Model.Product;
 
 import java.util.List;
@@ -57,7 +58,7 @@ public class ProductService
 //        }
 
 
-        public Product addProduct(Product p) throws ProductException
+        public Product addProduct(Product p) throws ProductException, SellerException
         {
             //System.out.println("addProduct running");
             //System.out.println("p.getProductName(): " + p.getProductName());
@@ -85,41 +86,52 @@ public class ProductService
 //                }
 //            }
 
-            int id = (int) (Math.random() * Long.MAX_VALUE);
-            p.setProductId(id);
-            p.setProductSeller();
-            productList.add(p);
-            return p;
+            //int id = (int) (Math.random() * Long.MAX_VALUE);
+            //p.setProductId(id);
+
+            if(sellerService.getSellerByName(p.productSeller) != null)
+            {
+                return productDao.insertProduct(p);
+            }
+            else {
+                throw new ProductException("Seller must already exist in database");
+            }
         }
 //Def want to test this method in unit testing
 
 
-    public void updateProduct(int id, Product updatedProduct)
+    public Product updateProduct(int id, Product updatedProduct)
     {
-        /*Product productToUpdate = getProductByID();
+        Product productToUpdate = productDao.getProductById(id);
+
+        if (productToUpdate != null)
         {
-            if (productToUpdate !=null)
-            {
-                productToUpdate.setProductName(updatedProduct.getProductName());
-                productToUpdate.setProductPrice(updatedProduct.getProductPrice());
-            }
-        }*/
+            productToUpdate.setProductName(updatedProduct.getProductName());
+            productToUpdate.setProductPrice(updatedProduct.getProductPrice());
+            productToUpdate.setProductSeller(updatedProduct.getProductSeller());
 
+            return productDao.updateProduct(productToUpdate);
+        }
+        else
+        {
+            return null;
+        }
     }
 
-    public Product updateProductPrice(int productId, double newPrice)
+    /*public Product updateProductPrice(int productId, double newPrice)
     {
-        return productDao.updateProductPrice(productId, newPrice);
-    }
+        //return productDao.updateProductPrice(productId, newPrice);
+    }*/
 
     public Product deleteProductById(int id){
-            List<Product> productList = productDao.getAllProduct();
+            /*List<Product> productList = productDao.getAllProduct();
             for(int i=0; i < productList.size(); i++){
                 Product currentProduct = productList.get(i);
                 if(currentProduct.getProductId() == id){
                     productDao.deleteProductById(currentProduct);
                 }
-            }
+            }*/
+        productDao.deleteProductById(id);
         return null;
     }
 

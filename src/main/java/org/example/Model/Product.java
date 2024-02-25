@@ -3,6 +3,9 @@ package org.example.Model;
 import java.text.DecimalFormat;
 import java.util.Objects;
 
+import org.example.Exception.SellerException;
+import org.example.Service.SellerService;
+
 public class Product
 {
     public int productId;
@@ -10,19 +13,41 @@ public class Product
     public String productSeller;
     public double productPrice;
 
-    public int productSellerId;
+    public int productSellerId = -1;
+
 
     public Product()
     {
-
     }
 
-    public Product(int productId, String productName, String productSeller, double newPrice, int sellerId)
+    public Product(int productId, String productName, String productSeller, double productPrice, int productSellerId)
     {
+        this.productId = productId;
+        this.productName = productName;
+        this.productSeller = productSeller;
+        this.productPrice = productPrice;
+        this.productSellerId = productSellerId;
     }
 
     public Product(int productId, String productName)
     {
+        this.productId = productId;
+        this.productName = productName;
+    }
+
+    public Product(int productId, String productName, String productSeller)
+    {
+        this.productId = productId;
+        this.productName = productName;
+        this.productSeller = productSeller;
+    }
+
+    public Product(int productId, String productName, String productSeller, Double productPrice)
+    {
+        this.productId = productId;
+        this.productName = productName;
+        this.productSeller = productSeller;
+        this.productPrice = productPrice;
     }
 
     public int getProductId()
@@ -62,14 +87,6 @@ public class Product
 //    }
 
 
-
-
-
-    public Product(int productId, String productName, String productSeller, int productSellerId)
-    {
-    }
-
-
 //    public Product(String productName, String productSeller, String productPrice, int sellerId)
 //    {
 //        DecimalFormat decFor = new DecimalFormat("0.00");
@@ -79,39 +96,34 @@ public class Product
 //        this.productSellerId = sellerId;
 //    }
 
-    public Product(String productName, String productSeller, double productPrice, int sellerId)
+    public Product(String productName, String productSeller, double productPrice)
     {
         DecimalFormat decFor = new DecimalFormat("0.00");
         this.productName = productName;
         this.productSeller = productSeller;
         this.productPrice = Double.parseDouble(decFor.format(productPrice));
-        this.productSellerId = sellerId;
     }
 
     public String getProductName(){return productName;}
 
-
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
     public String getProductSeller()
     {
         return productSeller;
     }
 
+    public void setProductSeller(String newName) {
+        this.productSeller = newName;
+    }
+
+
     public double getProductPrice() {return productPrice;}
 
-
-    public int getProductSellerId()
-    {
-        return productSellerId;
+    public void setProductPrice(double productPrice) {
+        this.productPrice = productPrice;
     }
-
-    public void setProductId(int id)
-    {
-    }
-
-    public void setProductSeller()
-    {
-    }
-
 
 
     @Override
@@ -148,4 +160,23 @@ public class Product
     }
 
 
+    public int getProductSellerId(SellerService sellerService) throws SellerException
+    {
+        int newSellerId = sellerService.getSellerIdByName(productSeller);
+
+        if(productSellerId == -1)
+        {
+            this.productSellerId = newSellerId;
+        }
+
+        return newSellerId;
+    }
+
+    public void setProductSellerId(int newId)
+    {
+        if(productSellerId == -1)
+        {
+            productSellerId = newId;
+        }
+    }
 }

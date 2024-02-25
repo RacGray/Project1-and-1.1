@@ -31,6 +31,24 @@ public class SellerService
         }
     }
 
+    public Seller getSellerByName(String name) throws SellerException{
+        Seller s = sellerDao.getSellerByName(name);
+        if(s == null){
+            throw new SellerException("This seller was not found in the database.");
+        }else{
+            return s;
+        }
+    }
+
+    public int getSellerIdByName(String name) throws SellerException{
+        Seller s = sellerDao.getSellerByName(name);
+        if(s == null){
+            throw new SellerException("This seller was not found in the database.");
+        }else{
+            return s.id;
+        }
+    }
+
     public Seller addSeller(Seller s) throws ProductException
     {
         //System.out.println("addProduct running");
