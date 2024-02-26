@@ -138,32 +138,6 @@ public class ProductDao
         return null;
     }
 
-   /*public Product updateProductPrice(int id, double newPrice)
-    {
-        try
-        {
-            PreparedStatement ps = conn.prepareStatement("update product set productPrice = " + newPrice + " where productId = " + id);
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next())
-            {
-                int productId = rs.getInt("productId");
-                String productName = rs.getString("productName");
-                String productSeller = rs.getString("productSeller");
-                int productSellerId = rs.getInt("productSellerId");
-                Product p = new Product(productId, productName, productSeller, newPrice, productSellerId);
-
-                return p;
-            }
-            else
-            {
-                return null;
-            }
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-        return null;
-    }*/
 
     public Product getProductByProductSeller(String ProductSeller){
         try

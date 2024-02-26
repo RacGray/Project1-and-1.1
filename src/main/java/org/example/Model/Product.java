@@ -56,45 +56,6 @@ public class Product
     }
 
 
-//    public void setProductId(int productId)
-//    {
-//        this.productId = productId;
-//    }
-//
-//    public void setProductName(String productName)
-//    {
-//        this.productName = productName;
-//    }
-//
-//    public void setProductSeller(String productSeller)
-//    {
-//        this.productSeller = productSeller;
-//    }
-//
-//    public double getProductPrice()
-//    {
-//        return productPrice;
-//    }
-//
-//    public void setProductPrice(double productPrice)
-//    {
-//        this.productPrice = productPrice;
-//    }
-//
-//    public void setProductSellerId(int sellerId)
-//    {
-//        this.productSellerId = sellerId;
-//    }
-
-
-//    public Product(String productName, String productSeller, String productPrice, int sellerId)
-//    {
-//        DecimalFormat decFor = new DecimalFormat("0.00");
-//        this.productName = productName;
-//        this.productSeller = productSeller;
-//        this.productPrice = Double.parseDouble(decFor.format(productPrice));
-//        this.productSellerId = sellerId;
-//    }
 
     public Product(String productName, String productSeller, double productPrice)
     {

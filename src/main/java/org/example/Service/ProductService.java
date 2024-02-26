@@ -48,46 +48,15 @@ public class ProductService
         return null;
     }
 
-//        public Product getAllProductsById(int productId) throws ProductException{
-//            Product p = productDao.getAllProductsById(productId);
-//            if(p == null){
-//                throw new ProductException("That product does not exist in the database.");
-//            }else{
-//                return p;
-//            }
-//        }
 
 
         public Product addProduct(Product p) throws ProductException, SellerException
         {
-            //System.out.println("addProduct running");
-            //System.out.println("p.getProductName(): " + p.getProductName());
-            //System.out.println("p.getProductSeller(): " + p.getProductSeller());
+
             if ((p.getProductName() == null || p.getProductName().isEmpty()) || (p.getProductSeller() == null || p.getProductSeller().isEmpty()))
             {
                 throw new ProductException("Product and Seller Name fields must be non-null");
             }
-
-//            boolean validNameFound = false;
-//
-//            int sellerId = -1;
-//
-//            for(int i=0; i < sellerService.getAllSeller(); i++)
-//            {
-//                if (p.equals(sellerService.getAllSeller().get(i).getValidName(), p.productSeller))
-//                {
-//                    validNameFound = true;
-//                    sellerId = sellerService.sellerList.get(i).getId();
-//                }
-//
-//                if(!validNameFound)
-//                {
-//                    throw new ProductException("This is not an authorized Product Seller.");
-//                }
-//            }
-
-            //int id = (int) (Math.random() * Long.MAX_VALUE);
-            //p.setProductId(id);
 
             if(sellerService.getSellerByName(p.productSeller) != null)
             {
@@ -118,19 +87,10 @@ public class ProductService
         }
     }
 
-    /*public Product updateProductPrice(int productId, double newPrice)
-    {
-        //return productDao.updateProductPrice(productId, newPrice);
-    }*/
+
 
     public Product deleteProductById(int id){
-            /*List<Product> productList = productDao.getAllProduct();
-            for(int i=0; i < productList.size(); i++){
-                Product currentProduct = productList.get(i);
-                if(currentProduct.getProductId() == id){
-                    productDao.deleteProductById(currentProduct);
-                }
-            }*/
+
         productDao.deleteProductById(id);
         return null;
     }
@@ -148,27 +108,6 @@ public class ProductService
 }
 
 
-//    public Product getProductByProductSeller(String productSeller)
-//    {
-//        for (Product currentProduct : productList){
-//            if(currentProduct.getProductSeller() == productSeller) {
-//                return currentProduct;
-//            }
-//        }
-//        return null;
-//    }
-//}
-//        public Product getProductByProductSeller(String name)
-//        {
-//            for (Product currentProduct : productList)
-//            {
-//                if (Objects.equals(currentProduct.getProductSeller(), name))
-//                {
-//                    return currentProduct;
-//                }
-//            }
-//            return null;
-//        }
 
 
 

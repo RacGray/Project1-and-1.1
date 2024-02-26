@@ -70,21 +70,7 @@ public class ProductController
 
         });
 
-        /*api.get("seller/{validSeller}", context ->
-        {
-            Seller s = sellerDao.getSellerByValidName(context.pathParam("validName"));
-            if (s == null)
-            {
-                context.status(404);
-                context.result("This seller is not authorized.");
-            }
-            else
-            {
-                context.json(s);
-                context.status(200);
-            }
 
-        });*/
         api.post("seller", context ->
         {
             System.out.println("Seller post happening");
