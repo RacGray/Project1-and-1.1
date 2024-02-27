@@ -135,5 +135,65 @@ public class ProductSellerTest
         }
 
     }
+    @Test
+    public void testProductUpdate() throws ProductException
+    {
+            List<Product>productList = productDao.getAllProduct();
+
+        String testProductName = "Camp Stove Top Grill";
+        double testProductPrice = Double.parseDouble("399.99");
+        String testProductSeller = "Orange";
+
+        Seller seller = new Seller(23, "Orange");
+
+        Product product = new Product();
+        product.setProductName(testProductName);
+        product.setProductPrice(testProductPrice);
+        product.setProductSeller(testProductSeller);
+
+        sellerDao.insertSeller(seller);
+
+        productDao.insertProduct(product);
+        int productId = product.productId;
+
+        String updatedProductName = "Camp Fire Pit Grill";
+        double updatedProductPrice = 299.99;
+
+        Product updatedProduct = new Product();
+        updatedProduct.setProductName(updatedProductName);
+        updatedProduct.setProductPrice(updatedProductPrice);
+        try {
+            productService.updateProduct(productId, updatedProduct);
+        }catch (Exception e){
+
+        }
+
+    }
+
+    @Test
+    public void testProductDelete() throws ProductException
+    {
+        List<Product>productList = productDao.getAllProduct();
+
+        String testProductName = "Wood Burning Grill";
+        double testProductPrice = Double.parseDouble("99.99");
+        String testProductSeller = "Green";
+
+        Seller seller = new Seller(26, "Green");
+
+        Product product = new Product();
+        product.setProductName(testProductName);
+        product.setProductPrice(testProductPrice);
+        product.setProductSeller(testProductSeller);
+
+        sellerDao.insertSeller(seller);
+
+        productDao.insertProduct(product);
+        int productId = product.productId;
+
+        productDao.deleteProductById(productId);
+
+        assertEquals(0, productList.size());
+    }
 
 }
